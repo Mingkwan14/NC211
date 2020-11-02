@@ -1,0 +1,219 @@
+#include <windows.h>
+
+#include <GL/gl.h>
+
+#include <GL/glu.h>
+
+#include <GL/glut.h>
+
+#include <math.h>       /* exp,sin,cos */
+
+GLfloat rotation = 0;
+GLfloat rotation1 = 0;
+
+float posX = 0, posY = 0, posZ = 0, posX1, posY1, posZ1;
+
+void  room()
+{
+	glColor3f(1.0f, 1.0f, 0.0f); // yellow grid lines x-z plane
+	glBegin(GL_LINES);
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0 + n, 0, 0); glVertex3d(0 + n, 0, 10);
+	}
+
+	glEnd();
+
+	glBegin(GL_LINES);
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0 + n, 0, 0); glVertex3d(0 + n, 10, 0);
+	}
+	glEnd();
+
+	glBegin(GL_LINES); // yellow grid lines x-y plane
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0, 0, 0 + n); glVertex3d(10, 0, 0 + n);
+	}
+	glEnd();
+
+	glBegin(GL_LINES);
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0, 0 + n, 0); glVertex3d(10, 0 + n, 0);
+	}
+	glEnd();
+
+	glBegin(GL_LINES); // yellow grid lines y-z plane
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0, 0, 0 + n); glVertex3d(0, 10, 0 + n);
+	}
+	glEnd();
+
+	glBegin(GL_LINES);
+	for (GLint n = 0; n <= 10; n += 1)
+	{
+		glVertex3d(0, 0 + n, 0); glVertex3d(0, 0 + n, 10);
+	}
+	glEnd();
+}
+
+
+void blackarrow()
+{
+
+	glColor3f(0.0f, 1.0f, 0.0f); // black triangle
+	glBegin(GL_TRIANGLES);
+	glVertex3d(7 + posX, 0, 7); glVertex3d(5 + posX, 0, 5); glVertex3d(7 + posX, 0, 3);
+	glEnd();
+
+	glColor3f(0.0f, 1.0f, 0.0f); // black rectangle
+	glBegin(GL_POLYGON);
+	glVertex3d(7 + posX, 0, 4); glVertex3d(10 + posX, 0, 4); glVertex3d(10 + posX, 0, 6); glVertex3d(7 + posX, 0, 6);
+
+	glEnd();
+
+}
+
+void redarrow()
+{
+
+	glColor3f(1.0f, 0.0f, 0.0f); // red triangle
+	glBegin(GL_TRIANGLES);
+	glVertex3d(6 + posX1, 3 + posY1, 0); glVertex3d(8 + posX1, 5 + posY1, 0); glVertex3d(10 + posX1, 3 + posY1, 0);
+	glEnd();
+
+	glColor3f(1.0f, 0.0f, 0.0f); // red rectangle
+	glBegin(GL_POLYGON);
+	glVertex3d(7 + posX1, 0 + posY1, 0); glVertex3d(9 + posX1, 0 + posY1, 0); glVertex3d(9 + posX1, 3 + posY1, 0); glVertex3d(7 + posX1, 3 + posY1, 0);
+
+	glEnd();
+
+}
+
+void bluearrow()
+{
+
+	glColor3f(0.0f, 0.0f, 1.0f); // blue triangle
+	glRotated(rotation1, 0, 0, 1);
+	glRotated(rotation, 0, 0, 1);
+	glBegin(GL_TRIANGLES);
+	glVertex3d(0, 3, 7); glVertex3d(0, 5, 5); glVertex3d(0, 3, 3);
+	glEnd();
+
+	glColor3f(0.0f, 0.0f, 1.0f); // blue rectangle
+	glBegin(GL_POLYGON);
+	glVertex3d(0, 0, 6); glVertex3d(0, 3, 6); glVertex3d(0, 3, 4); glVertex3d(0, 0, 4);
+	glEnd();
+
+}
+
+int move_unit = 2.0;
+
+void keyboardown(int key, int x, int y)
+{
+
+	switch (key) {
+
+	case GLUT_KEY_RIGHT:
+
+		posX -= move_unit;;
+
+
+		break;
+
+	case GLUT_KEY_LEFT:
+
+		posX += move_unit;;
+
+
+		break;
+
+	case GLUT_KEY_UP:
+
+		posY1 += move_unit;;
+		posX1 -= move_unit;;
+
+		break;
+
+	case GLUT_KEY_DOWN:
+
+		posY1 -= move_unit;;
+		posX1 += move_unit;;
+
+		break;
+
+	case GLUT_KEY_HOME:
+
+		rotation1 += move_unit;
+
+
+		break;
+
+	case GLUT_KEY_END:
+
+		rotation -= move_unit;
+
+
+		break;
+
+	default:
+		break;
+
+
+	}
+
+
+	glutPostRedisplay();
+
+
+
+}
+
+
+void display(void)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-10, 10, -10, 10, -10, 10);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(5, 5, 5, 0, 0, 0, 0, 10, 0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3d(0, 0, 0);
+	room();
+
+	blackarrow();
+	redarrow();
+	bluearrow();
+
+	glFlush();
+
+
+}
+
+void main(int argc, char **argv)
+
+{
+
+	glutInit(&argc, argv);
+
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+
+	glutInitWindowSize(800, 800);
+
+	glutInitWindowPosition(100, 100);
+
+	glutCreateWindow("3D_primitives");
+
+	glutDisplayFunc(display);
+	glutSpecialFunc(keyboardown);
+
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+
+
+	glutMainLoop();
+
+}
